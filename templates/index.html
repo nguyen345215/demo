@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>ChatBox</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chat-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            max-width: 95%;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+        }
+
+        #chat {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            margin-bottom: 15px;
+        }
+
+        #userInput {
+            width: calc(100% - 80px);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            width: 60px;
+            padding: 10px;
+            margin-left: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        b {
+            color: #333;
+        }
+    </style>
+    <script>
+        function sendMessage() {
+            let userMsg = document.getElementById("userInput").value;
+            if (!userMsg.trim()) return;
+
+            fetch(`/get?msg=${encodeURIComponent(userMsg)}`)
+                .then(response => response.text())
+                .then(data => {
+                    const chat = document.getElementById("chat");
+                    chat.innerHTML += "<b>Bạn:</b> " + userMsg + "<br><b>GPT:</b> " + data + "<br><br>";
+                    chat.scrollTop = chat.scrollHeight; // Tự động cuộn xuống dưới
+                    document.getElementById("userInput").value = "";
+                });
+        }
+
+        // Cho phép nhấn Enter để gửi
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("userInput").addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Chat với GPT</h1>
+        <div id="chat"></div>
+        <div style="display: flex;">
+            <input type="text" id="userInput" placeholder="Nhập tin nhắn..."/>
+            <button onclick="sendMessage()">Gửi</button>
+        </div>
+    </div>
+</body>
+</html>
